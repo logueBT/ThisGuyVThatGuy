@@ -5,13 +5,23 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              x:Class="ThisGuyVThatGuy.MainPage"
              prism:ViewModelLocator.AutowireViewModel="True">
-
-	<Label Text="Welcome to Xamarin.Forms!" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center" />
-    <Image Source="{Binding Url1}" 
-               VerticalOptions="Fill"
-               HorizontalOptions="Fill"></Image>
-
+    <Label Text="{Binding SuccessMessage}"/>
+    <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        
+        <StackLayout Orientation="Vertical">
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding Image1Tapped}" NumberOfTapsRequired="1"/>
+            </StackLayout.GestureRecognizers>
+            <Image Source="{Binding Url1}"></Image>
+            <Label Text="{Binding Name1}"/>
+        </StackLayout>
+        <StackLayout Orientation="Vertical">
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding Image2Tapped}" NumberOfTapsRequired="1"/>
+            </StackLayout.GestureRecognizers>
+            <Image Source="{Binding Url2}"></Image>
+            <Label Text="{Binding Name2}"/>
+        </StackLayout>
+    </StackLayout>
 
 </ContentPage>

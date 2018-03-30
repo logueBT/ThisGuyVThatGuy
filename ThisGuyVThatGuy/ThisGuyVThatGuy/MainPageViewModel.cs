@@ -20,10 +20,27 @@ namespace ThisGuyVThatGuy
 
         private IGetJsonService getJsonService;
 
+        private Random rnd1 = new Random();
+
         private ObservableCollection<Player> playersList;
 
         private string url1;
 
+        private string url2;
+
+        private string name1;
+
+        private string name2;
+
+        private string score1;
+
+        private string score2;
+
+        private string successMessage;
+
+        private bool showScore;
+
+        private int count;
 
         public MainPageViewModel(INavigationService navigationService, IGetJsonService getJsonService)
         {
@@ -65,12 +82,120 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        public string Url2
+        {
+            get
+            {
+                return this.url2;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.url2, value);
+            }
+        }
+
+        public string Name1
+        {
+            get
+            {
+                return this.name1;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.name1, value);
+            }
+        }
+
+        public string Name2
+        {
+            get
+            {
+                return this.name2;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.name2, value);
+            }
+        }
+
+        public string Score1
+        {
+            get
+            {
+                return this.score1;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.score1, value);
+            }
+        }
+
+        public string Score2
+        {
+            get
+            {
+                return this.score2;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.score2, value);
+            }
+        }
+
+        public string SuccessMessage
+        {
+            get
+            {
+                return this.successMessage;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.successMessage, value);
+            }
+        }
+
+        public bool ShowScore
+        {
+            get
+            {
+                return this.showScore;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.showScore, value);
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return this.count;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.count, value);
+            }
+        }
+
         public void OnNavigatedFrom(NavigationParameters parameters)
         {
         }
 
         public void OnNavigatedTo(NavigationParameters parameters)
         {
+            this.SuccessMessage = "Pick who has the highest FPPG";
+
+            this.ShowScore = false;
+            this.Count = 0;
             this.GetJson();
         }
 
@@ -112,14 +237,31 @@ namespace ThisGuyVThatGuy
                     if (players.Count > 0)
                     {
                         this.PlayersList = players;
-                        this.Url1 = this.PlayersList[0].Image["default"].Url;
+                        this.GetTwoPlayers();
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                //
+                // exception here
             }
+        }
+
+        public void GetTwoPlayers()
+        {
+            int player1 = this.rnd1.Next(this.PlayersList.Count - 1);
+            int player2 = this.rnd1.Next(this.PlayersList.Count - 1);
+
+            Player p1 = this.PlayersList[player1];
+            Player p2 = this.PlayersList[player2];
+
+            this.Name1 = p1.FirstName + " " + p1.LastName;
+            this.Url1 = p1.Image["default"].Url;
+            this.Score1 = p1.FPPG;
+
+            this.Name2 = p2.FirstName + " " + p2.LastName;
+            this.Url2 = p2.Image["default"].Url;
+            this.Score2 = p2.FPPG;
         }
     }
 }

@@ -4,19 +4,19 @@
 
 namespace ThisGuyVThatGuy.Models
 {
+    using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// player object
     /// </summary>
-    [DataContract]
     public class Player
     {
         /// <summary>
         /// Gets or sets the first name
         /// </summary>
-        [DataMember(Name = "first_name")]
+        [JsonProperty("first_name")]
         public string FirstName
         {
             get;
@@ -26,7 +26,7 @@ namespace ThisGuyVThatGuy.Models
         /// <summary>
         /// Gets or sets the last name
         /// </summary>
-        [DataMember(Name = "last_name")]
+        [JsonProperty("last_name")]
         public string LastName
         {
             get;
@@ -36,7 +36,7 @@ namespace ThisGuyVThatGuy.Models
         /// <summary>
         /// Gets or sets the fppg
         /// </summary>
-        [DataMember(Name = "fppg")]
+        [JsonProperty("fppg")]
         public string FPPG
         {
             get;
@@ -46,29 +46,11 @@ namespace ThisGuyVThatGuy.Models
         /// <summary>
         /// Gets or sets the image
         /// </summary>
-        [DataMember(Name = "images")]
+        [JsonProperty("images")]
         public Dictionary<string, PlayerImage> Image
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// Gets the first Consig.
-        /// </summary>
-        public string ImageUrl
-        {
-            get
-            {
-                try
-                {
-                    return this.Image["detail"].Url;
-                }
-                catch (System.Exception)
-                {
-                    return string.Empty;
-                }
-            }
         }
     }
 }
