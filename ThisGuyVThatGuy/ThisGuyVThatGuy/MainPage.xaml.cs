@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿// <copyright file="MainPage.xaml.cs" company="Josh Logue">
+// Copyright (c) Josh Logue. All rights reserved.
+// </copyright>
 
 namespace ThisGuyVThatGuy
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage()
-		{
-			InitializeComponent();
-		}
-	}
+    using Xamarin.Forms;
+
+    public partial class MainPage : ContentPage
+    {
+        public MainPage()
+        {
+            this.InitializeComponent();
+        }
+    }
 }

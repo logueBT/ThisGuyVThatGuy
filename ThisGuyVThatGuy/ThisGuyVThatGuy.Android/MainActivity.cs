@@ -1,16 +1,15 @@
-﻿using System;
-
-using Android.App;
-using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.OS;
-using Prism;
-using Prism.Ioc;
+﻿// <copyright file="MainActivity.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace ThisGuyVThatGuy.Droid
 {
+    using Android.App;
+    using Android.Content.PM;
+    using Android.OS;
+    using Prism;
+    using Prism.Ioc;
+
     [Activity(Label = "ThisGuyVThatGuy", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -22,7 +21,7 @@ namespace ThisGuyVThatGuy.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            LoadApplication(new App(new AndroidInitializer()));
+            this.LoadApplication(new App(new AndroidInitializer()));
         }
     }
 
@@ -33,4 +32,3 @@ namespace ThisGuyVThatGuy.Droid
         }
     }
 }
-
