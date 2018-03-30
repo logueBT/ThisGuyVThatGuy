@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Prism;
+using Prism.Ioc;
+using Prism.Navigation;
+using Prism.Unity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,13 +11,10 @@ using Xamarin.Forms;
 
 namespace ThisGuyVThatGuy
 {
-	public partial class App : Application
+	public partial class App : PrismApplication
 	{
-		public App ()
+		public App (IPlatformInitializer initializer = null) : base(initializer)
 		{
-			InitializeComponent();
-
-			MainPage = new ThisGuyVThatGuy.MainPage();
 		}
 
 		protected override void OnStart ()
@@ -30,5 +31,16 @@ namespace ThisGuyVThatGuy
 		{
 			// Handle when your app resumes
 		}
-	}
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+        }
+
+        protected override void OnInitialized()
+        {
+            InitializeComponent();
+            NavigationService.NavigateAsync(new System.Uri("http://www.ThisGuyVThatGuy/MainPage", System.UriKind.Absolute));
+        }
+    }
 }
