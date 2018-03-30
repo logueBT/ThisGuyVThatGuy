@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
-using UIKit;
+﻿// <copyright file="Main.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace ThisGuyVThatGuy.iOS
 {
+    using UIKit;
+
     public class Application
     {
         // This is the main entry point of the application.
