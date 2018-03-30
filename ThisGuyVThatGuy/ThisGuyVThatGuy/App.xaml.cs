@@ -7,6 +7,8 @@ namespace ThisGuyVThatGuy
     using Prism;
     using Prism.Ioc;
     using Prism.Unity;
+    using ThisGuyVThatGuy.Services;
+    using ThisGuyVThatGuy.Services.Interfaces;
 
     public partial class App : PrismApplication
     {
@@ -33,6 +35,7 @@ namespace ThisGuyVThatGuy
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.Register<IGetJsonService, GetJsonService>();
         }
 
         protected override void OnInitialized()

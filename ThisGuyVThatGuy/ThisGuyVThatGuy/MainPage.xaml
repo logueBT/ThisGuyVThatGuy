@@ -9,5 +9,9 @@
 	<Label Text="Welcome to Xamarin.Forms!" 
            VerticalOptions="Center" 
            HorizontalOptions="Center" />
+    <Image Source="{Binding Url1}" 
+               VerticalOptions="Fill"
+               HorizontalOptions="Fill"></Image>
+
 
 </ContentPage>
