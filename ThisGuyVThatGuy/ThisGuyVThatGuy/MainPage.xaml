@@ -18,16 +18,32 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition 
-                        Height="100">
+                        Height="Auto">
             </RowDefinition>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackLayout Grid.Row="0" Margin="10">
             <Label Text="This Guy V That Guy" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-            <Label Text="{Binding SuccessMessage}"/>
-        </StackLayout>
+                <Label Text="Pick which player has the largest FPPG, you'll be given 10 tries to get it right."/>
+                <Label Text="How many players do you want to choose from?"/>
+                <Picker x:Name="numberPicker" SelectedItem="{Binding NumberPlayers}" HorizontalOptions="FillAndExpand">
+                    <Picker.Items>
+                        <x:String>2</x:String>
+                        <x:String>3</x:String>
+                        <x:String>4</x:String>
+                        <x:String>5</x:String>
+                        <x:String>6</x:String>
+                    </Picker.Items>
+                </Picker>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Number of tries left:"/>
+                    <Label Text="{Binding Count}"/>
+                </StackLayout>
+                <Label Text="{Binding SuccessMessage}"/>
+                <Button Text="{Binding ButtonMessage}" Command="{Binding GoCommand}"/>
+            </StackLayout>
         
-    <ListView Grid.Row="1" x:Name="PlayerListView" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
+    <ListView Grid.Row="1" x:Name="PlayerListView" IsVisible="{Binding ShowList}" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>

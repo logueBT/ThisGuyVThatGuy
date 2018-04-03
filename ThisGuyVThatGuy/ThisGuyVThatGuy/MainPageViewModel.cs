@@ -7,12 +7,15 @@ namespace ThisGuyVThatGuy
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Prism.Mvvm;
     using Prism.Navigation;
     using ThisGuyVThatGuy.Models;
     using ThisGuyVThatGuy.Services.Interfaces;
+    using Xamarin.Forms;
 
     public class MainPageViewModel : BindableBase, INavigationAware
     {
@@ -28,29 +31,29 @@ namespace ThisGuyVThatGuy
 
         private Player selectedPlayer;
 
-        private string url1;
-
-        private string url2;
-
-        private string name1;
-
-        private string name2;
-
-        private string score1;
-
-        private string score2;
-
         private string successMessage;
+
+        private string buttonMessage;
 
         private bool showScore;
 
+        private bool showList;
+
         private int count;
+
+        private string numberPlayers;
 
         public MainPageViewModel(INavigationService navigationService, IGetJsonService getJsonService)
         {
             this.navigationService = navigationService;
             this.getJsonService = getJsonService;
+            this.GoCommand = new Command(async (obj) => { await this.StartChoosing(obj); });
         }
+
+        /// <summary>
+        /// Gets the command to go go
+        /// </summary>
+        public Command GoCommand { get; private set; }
 
         /// <summary>
         /// Gets or sets observable collection with player list
@@ -111,89 +114,34 @@ namespace ThisGuyVThatGuy
                 this.SetProperty(ref this.selectedPlayer, value);
                 if (value != null)
                 {
-                    if (!this.ShowScore)
-                    {
-                        this.ShowScore = true;
-                    }
+                    this.RightAnswer(value.FPPG);
                 }
             }
         }
 
-        public string Url1
+        public string NumberPlayers
         {
             get
             {
-                return this.url1;
+                return this.numberPlayers;
             }
 
             set
             {
-                this.SetProperty(ref this.url1, value);
-            }
-        }
-
-        public string Url2
-        {
-            get
-            {
-                return this.url2;
-            }
-
-            set
-            {
-                this.SetProperty(ref this.url2, value);
-            }
-        }
-
-        public string Name1
-        {
-            get
-            {
-                return this.name1;
-            }
-
-            set
-            {
-                this.SetProperty(ref this.name1, value);
-            }
-        }
-
-        public string Name2
-        {
-            get
-            {
-                return this.name2;
-            }
-
-            set
-            {
-                this.SetProperty(ref this.name2, value);
-            }
-        }
-
-        public string Score1
-        {
-            get
-            {
-                return this.score1;
-            }
-
-            set
-            {
-                this.SetProperty(ref this.score1, value);
-            }
-        }
-
-        public string Score2
-        {
-            get
-            {
-                return this.score2;
-            }
-
-            set
-            {
-                this.SetProperty(ref this.score2, value);
+                this.SetProperty(ref this.numberPlayers, value);
+                if (value != null)
+                {
+                    try
+                    {
+                        string num = value;
+                        int number = Convert.ToInt32(num);
+                        this.GetRandomPlayers(number);
+                    }
+                    catch (Exception)
+                    {
+                        // exception
+                    }
+                }
             }
         }
 
@@ -210,6 +158,19 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        public string ButtonMessage
+        {
+            get
+            {
+                return this.buttonMessage;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.buttonMessage, value);
+            }
+        }
+
         public bool ShowScore
         {
             get
@@ -220,6 +181,19 @@ namespace ThisGuyVThatGuy
             set
             {
                 this.SetProperty(ref this.showScore, value);
+            }
+        }
+
+        public bool ShowList
+        {
+            get
+            {
+                return this.showList;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.showList, value);
             }
         }
 
@@ -243,14 +217,75 @@ namespace ThisGuyVThatGuy
         public void OnNavigatedTo(NavigationParameters parameters)
         {
             this.SuccessMessage = "Pick who has the highest FPPG";
-
+            this.ShowList = false;
             this.ShowScore = false;
-            this.Count = 0;
+            this.NumberPlayers = "2";
+            this.Count = 10;
+            this.ButtonMessage = "Go!";
             this.GetJson();
         }
 
         public void OnNavigatingTo(NavigationParameters parameters)
         {
+        }
+
+        public async Task StartChoosing(object obj)
+        {
+            this.ShowScore = false;
+
+            if (this.ShowList)
+            {
+                this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
+            }
+            else
+            {
+                this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
+                this.ShowList = true;
+                this.Count = 10;
+                this.SuccessMessage = "Pick who has the highest FPPG";
+            }
+        }
+
+        public void RightAnswer(string fppgSelected)
+        {
+            if (this.ShowScore == false)
+            {
+                this.ShowScore = true;
+            }
+
+            this.Count--;
+
+            if (this.Count > 0)
+            {
+                double selected = Convert.ToDouble(fppgSelected);
+                List<double> scores = new List<double>();
+                foreach (var item in this.PlayersPick)
+                {
+                    double pick = Convert.ToDouble(item.FPPG);
+                    scores.Add(pick);
+                }
+
+                double max = scores.Max();
+
+                if (selected == max)
+                {
+                    int goes = 10 - this.Count;
+                    this.SuccessMessage = "Well done you guessed in " + goes.ToString() + " tries.";
+                    this.ShowList = false;
+                    this.ButtonMessage = "Go!";
+                }
+                else
+                {
+                    this.SuccessMessage = "Wrong, try again";
+                    this.ButtonMessage = "Try again";
+                }
+            }
+            else
+            {
+                this.SuccessMessage = "Sorry, you failed. Try again?";
+                this.ShowList = false;
+                this.ButtonMessage = "Go!";
+            }
         }
 
         public async void GetJson()
@@ -287,7 +322,6 @@ namespace ThisGuyVThatGuy
                     if (players.Count > 0)
                     {
                         this.PlayersList = players;
-                        this.GetRandomPlayers(5);
                     }
                 }
             }
@@ -300,11 +334,10 @@ namespace ThisGuyVThatGuy
         public void GetRandomPlayers(int numPlayers)
         {
             ObservableCollection<Player> list = new ObservableCollection<Player>();
-
-            for (int i = 0; i < numPlayers; i++)
+            var list1 = Enumerable.Range(0, this.PlayersList.Count - 1).OrderBy(x => this.rnd1.Next()).Take(numPlayers);
+            foreach (var item in list1)
             {
-                int num = this.rnd1.Next(this.PlayersList.Count - 1);
-                Player p = this.PlayersList[num];
+                Player p = this.PlayersList[item];
                 list.Add(p);
             }
 
