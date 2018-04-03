@@ -220,7 +220,7 @@ namespace ThisGuyVThatGuy
             this.ShowList = false;
             this.ShowScore = false;
             this.NumberPlayers = "2";
-            this.Count = 10;
+            this.Count = 0;
             this.ButtonMessage = "Go!";
             this.GetJson();
         }
@@ -241,7 +241,7 @@ namespace ThisGuyVThatGuy
             {
                 this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
                 this.ShowList = true;
-                this.Count = 10;
+                this.Count = 0;
                 this.SuccessMessage = "Pick who has the highest FPPG";
             }
         }
@@ -253,10 +253,6 @@ namespace ThisGuyVThatGuy
                 this.ShowScore = true;
             }
 
-            this.Count--;
-
-            if (this.Count > 0)
-            {
                 double selected = Convert.ToDouble(fppgSelected);
                 List<double> scores = new List<double>();
                 foreach (var item in this.PlayersPick)
@@ -267,24 +263,25 @@ namespace ThisGuyVThatGuy
 
                 double max = scores.Max();
 
-                if (selected == max)
+            if (selected == max)
+            {
+                this.Count++;
+                if (this.Count > 9)
                 {
-                    int goes = 10 - this.Count;
-                    this.SuccessMessage = "Well done you guessed in " + goes.ToString() + " tries.";
+                    this.SuccessMessage = "You did it! Go again?";
                     this.ShowList = false;
                     this.ButtonMessage = "Go!";
                 }
                 else
                 {
-                    this.SuccessMessage = "Wrong, try again";
-                    this.ButtonMessage = "Try again";
+                    this.SuccessMessage = "Correct, keep going";
+                    this.ButtonMessage = "Go again";
                 }
             }
             else
             {
-                this.SuccessMessage = "Sorry, you failed. Try again?";
-                this.ShowList = false;
-                this.ButtonMessage = "Go!";
+                this.SuccessMessage = "Wrong, try again";
+                this.ButtonMessage = "Try again";
             }
         }
 
