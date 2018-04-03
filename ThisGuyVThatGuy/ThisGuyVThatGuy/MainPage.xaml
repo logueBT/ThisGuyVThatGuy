@@ -4,24 +4,24 @@
              xmlns:local="clr-namespace:ThisGuyVThatGuy"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              x:Class="ThisGuyVThatGuy.MainPage"
+             xmlns:convert="clr-namespace:ThisGuyVThatGuy.Converters"
              prism:ViewModelLocator.AutowireViewModel="True">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <convert:ImageDicToUrlConverter x:Key="ImageDicToUrlConverter"></convert:ImageDicToUrlConverter>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Label Text="{Binding SuccessMessage}"/>
-    <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-        
-        <StackLayout Orientation="Vertical">
-            <StackLayout.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding Image1Tapped}" NumberOfTapsRequired="1"/>
-            </StackLayout.GestureRecognizers>
-            <Image Source="{Binding Url1}"></Image>
-            <Label Text="{Binding Name1}"/>
-        </StackLayout>
-        <StackLayout Orientation="Vertical">
-            <StackLayout.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding Image2Tapped}" NumberOfTapsRequired="1"/>
-            </StackLayout.GestureRecognizers>
-            <Image Source="{Binding Url2}"></Image>
-            <Label Text="{Binding Name2}"/>
-        </StackLayout>
-    </StackLayout>
+    <ListView x:Name="PlayerListView" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ImageCell Text="{Binding FullName}" Detail="{Binding FPPG}" ImageSource="{Binding Image, Converter={StaticResource ImageDicToUrlConverter}}}" />
+
+
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
 
 </ContentPage>

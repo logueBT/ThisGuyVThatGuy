@@ -52,5 +52,8 @@ namespace ThisGuyVThatGuy.Models
             get;
             set;
         }
+
+        public string FullName => string.Format("{0} {1}", this.FirstName, this.LastName);
+
     }
 }

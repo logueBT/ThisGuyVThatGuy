@@ -24,6 +24,10 @@ namespace ThisGuyVThatGuy
 
         private ObservableCollection<Player> playersList;
 
+        private ObservableCollection<Player> playersPick;
+
+        private Player selectedPlayer;
+
         private string url1;
 
         private string url2;
@@ -66,6 +70,49 @@ namespace ThisGuyVThatGuy
             set
             {
                 this.SetProperty(ref this.playersList, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets observable collection with player list
+        /// </summary>
+        public ObservableCollection<Player> PlayersPick
+        {
+            get
+            {
+                if (this.playersPick == null)
+                {
+                    this.playersPick = new ObservableCollection<Player>();
+                }
+
+                return this.playersPick;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.playersPick, value);
+            }
+        }
+
+        public Player SelectedPlayer
+        {
+            get
+            {
+                if (this.selectedPlayer == null)
+                {
+                    this.selectedPlayer = new Player();
+                }
+
+                return this.selectedPlayer;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.selectedPlayer, value);
+                if (value != null)
+                {
+                    this.GetRandomPlayers(4);
+                }
             }
         }
 
@@ -237,7 +284,7 @@ namespace ThisGuyVThatGuy
                     if (players.Count > 0)
                     {
                         this.PlayersList = players;
-                        this.GetTwoPlayers();
+                        this.GetRandomPlayers(5);
                     }
                 }
             }
@@ -247,21 +294,18 @@ namespace ThisGuyVThatGuy
             }
         }
 
-        public void GetTwoPlayers()
+        public void GetRandomPlayers(int numPlayers)
         {
-            int player1 = this.rnd1.Next(this.PlayersList.Count - 1);
-            int player2 = this.rnd1.Next(this.PlayersList.Count - 1);
+            ObservableCollection<Player> list = new ObservableCollection<Player>();
 
-            Player p1 = this.PlayersList[player1];
-            Player p2 = this.PlayersList[player2];
+            for (int i = 0; i < numPlayers; i++)
+            {
+                int num = this.rnd1.Next(this.PlayersList.Count - 1);
+                Player p = this.PlayersList[num];
+                list.Add(p);
+            }
 
-            this.Name1 = p1.FirstName + " " + p1.LastName;
-            this.Url1 = p1.Image["default"].Url;
-            this.Score1 = p1.FPPG;
-
-            this.Name2 = p2.FirstName + " " + p2.LastName;
-            this.Url2 = p2.Image["default"].Url;
-            this.Score2 = p2.FPPG;
+            this.PlayersPick = list;
         }
     }
 }
