@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:ThisGuyVThatGuy"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              x:Class="ThisGuyVThatGuy.MainPage"
+             x:Name="Main"
              xmlns:convert="clr-namespace:ThisGuyVThatGuy.Converters"
              prism:ViewModelLocator.AutowireViewModel="True">
 
@@ -13,15 +14,36 @@
 
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Label Text="{Binding SuccessMessage}"/>
-    <ListView x:Name="PlayerListView" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
+    <ScrollView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition 
+                        Height="100">
+            </RowDefinition>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackLayout Grid.Row="0" Margin="10">
+            <Label Text="This Guy V That Guy" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+            <Label Text="{Binding SuccessMessage}"/>
+        </StackLayout>
+        
+    <ListView Grid.Row="1" x:Name="PlayerListView" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
         <ListView.ItemTemplate>
             <DataTemplate>
-                <ImageCell Text="{Binding FullName}" Detail="{Binding FPPG}" ImageSource="{Binding Image, Converter={StaticResource ImageDicToUrlConverter}}}" />
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal">
+                        <Image Source="{Binding Image, Converter={StaticResource ImageDicToUrlConverter}}}"/>
+                        <StackLayout Orientation="Vertical">
+                            <Label Text="{Binding FullName}"/>
+                            <Label Text="{Binding FPPG}" IsVisible="{Binding Source = {x:Reference Main}, Path=BindingContext.ShowScore}"/>
+                        </StackLayout>
+                    </StackLayout>
+                </ViewCell>
 
 
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>
-
+    </Grid>
+    </ScrollView>
 </ContentPage>

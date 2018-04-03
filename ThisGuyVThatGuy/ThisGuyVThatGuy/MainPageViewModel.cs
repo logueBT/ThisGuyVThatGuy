@@ -111,7 +111,10 @@ namespace ThisGuyVThatGuy
                 this.SetProperty(ref this.selectedPlayer, value);
                 if (value != null)
                 {
-                    this.GetRandomPlayers(4);
+                    if (!this.ShowScore)
+                    {
+                        this.ShowScore = true;
+                    }
                 }
             }
         }
