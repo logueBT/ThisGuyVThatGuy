@@ -10,8 +10,29 @@ namespace ThisGuyVThatGuy.Converters
     using ThisGuyVThatGuy.Models;
     using Xamarin.Forms;
 
+    /// <summary>
+    /// Converts image dictionary to url string
+    /// </summary>
     public class ImageDicToUrlConverter : IValueConverter
     {
+        /// <summary>
+        /// The convert.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="targetType">
+        /// The target type.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <param name="culture">
+        /// The culture.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
@@ -26,6 +47,27 @@ namespace ThisGuyVThatGuy.Converters
             }
         }
 
+        /// <summary>
+        /// The convert back.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="targetType">
+        /// The target type.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <param name="culture">
+        /// The culture.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
+        /// <exception cref="NotImplementedException">
+        /// Not Implemented
+        /// </exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

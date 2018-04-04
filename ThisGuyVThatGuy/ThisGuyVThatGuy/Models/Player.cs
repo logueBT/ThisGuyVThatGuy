@@ -4,9 +4,8 @@
 
 namespace ThisGuyVThatGuy.Models
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// player object
@@ -53,7 +52,9 @@ namespace ThisGuyVThatGuy.Models
             set;
         }
 
+        /// <summary>
+        /// Gets the full name
+        /// </summary>
         public string FullName => string.Format("{0} {1}", this.FirstName, this.LastName);
-
     }
 }

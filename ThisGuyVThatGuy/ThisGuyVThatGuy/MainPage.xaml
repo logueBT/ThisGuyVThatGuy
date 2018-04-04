@@ -40,10 +40,10 @@
                     <Label Text="{Binding Count}"/>
                 </StackLayout>
                 <Label Text="{Binding SuccessMessage}"/>
-                <Button Text="{Binding ButtonMessage}" Command="{Binding GoCommand}"/>
+                <Button Text="{Binding ButtonMessage}" IsVisible="{Binding ButtonEnabled}" Command="{Binding GoCommand}"/>
             </StackLayout>
         
-    <ListView Grid.Row="1" x:Name="PlayerListView" IsVisible="{Binding ShowList}" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
+    <ListView Grid.Row="1" x:Name="PlayerListView" IsVisible="{Binding ShowList}" IsEnabled="{Binding Enabled}" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" BackgroundColor="#eeeeee" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>

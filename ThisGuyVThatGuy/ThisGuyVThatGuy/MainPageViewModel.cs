@@ -14,6 +14,7 @@ namespace ThisGuyVThatGuy
     using Prism.Mvvm;
     using Prism.Navigation;
     using ThisGuyVThatGuy.Models;
+    using ThisGuyVThatGuy.Services;
     using ThisGuyVThatGuy.Services.Interfaces;
     using Xamarin.Forms;
 
@@ -39,6 +40,10 @@ namespace ThisGuyVThatGuy
 
         private bool showList;
 
+        private bool enabled;
+
+        private bool buttonEnabled;
+
         private int count;
 
         private string numberPlayers;
@@ -47,7 +52,7 @@ namespace ThisGuyVThatGuy
         {
             this.navigationService = navigationService;
             this.getJsonService = getJsonService;
-            this.GoCommand = new Command(async (obj) => { await this.StartChoosing(obj); });
+            this.GoCommand = new Command((obj) => { this.StartChoosing(obj); });
         }
 
         /// <summary>
@@ -184,6 +189,32 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        public bool Enabled
+        {
+            get
+            {
+                return this.enabled;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.enabled, value);
+            }
+        }
+
+        public bool ButtonEnabled
+        {
+            get
+            {
+                return this.buttonEnabled;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.buttonEnabled, value);
+            }
+        }
+
         public bool ShowList
         {
             get
@@ -222,27 +253,36 @@ namespace ThisGuyVThatGuy
             this.NumberPlayers = "2";
             this.Count = 0;
             this.ButtonMessage = "Go!";
-            this.GetJson();
+            this.Enabled = true;
+            this.ButtonEnabled = true;
         }
 
         public void OnNavigatingTo(NavigationParameters parameters)
         {
         }
 
-        public async Task StartChoosing(object obj)
+        public void StartChoosing(object obj)
         {
-            this.ShowScore = false;
-
-            if (this.ShowList)
+            if (this.PlayersList.Count > 0)
             {
-                this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
+                this.ShowScore = false;
+                this.Enabled = true;
+
+                if (this.ShowList)
+                {
+                    this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
+                }
+                else
+                {
+                    this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
+                    this.ShowList = true;
+                    this.Count = 0;
+                    this.SuccessMessage = "Pick who has the highest FPPG";
+                }
             }
             else
             {
-                this.GetRandomPlayers(Convert.ToInt32(this.NumberPlayers));
-                this.ShowList = true;
-                this.Count = 0;
-                this.SuccessMessage = "Pick who has the highest FPPG";
+                this.GetJson();
             }
         }
 
@@ -251,17 +291,18 @@ namespace ThisGuyVThatGuy
             if (this.ShowScore == false)
             {
                 this.ShowScore = true;
+                this.Enabled = false;
             }
 
-                double selected = Convert.ToDouble(fppgSelected);
-                List<double> scores = new List<double>();
-                foreach (var item in this.PlayersPick)
-                {
-                    double pick = Convert.ToDouble(item.FPPG);
-                    scores.Add(pick);
-                }
+            double selected = Convert.ToDouble(fppgSelected);
+            List<double> scores = new List<double>();
+            foreach (var item in this.PlayersPick)
+            {
+                double pick = Convert.ToDouble(item.FPPG);
+                scores.Add(pick);
+            }
 
-                double max = scores.Max();
+            double max = scores.Max();
 
             if (selected == max)
             {
@@ -287,45 +328,65 @@ namespace ThisGuyVThatGuy
 
         public async void GetJson()
         {
-            try
+            this.ButtonEnabled = false;
+            string url = "http://www.google.co.uk";
+
+            if (await NetworkStatus.HasConnectivity(url))
             {
-                Tuple<bool, string> getJsonResponse = await this.getJsonService.GetJsonAsync();
-                bool isSuccessful = getJsonResponse.Item1;
-
-                if (isSuccessful)
+                try
                 {
-                    string content = getJsonResponse.Item2;
-
-                    JObject parsedPayload = JsonConvert.DeserializeObject(content) as JObject;
-
-                    JToken data = parsedPayload.SelectToken("$.players");
-
+                    Tuple<bool, string> getJsonResponse = await this.getJsonService.GetJsonAsync();
+                    bool isSuccessful = getJsonResponse.Item1;
                     ObservableCollection<Player> players = new ObservableCollection<Player>();
-
-                    if (data.HasValues)
+                    if (isSuccessful)
                     {
-                        if (data.Type == JTokenType.Array)
-                        {
-                            var dataArray = data as JArray;
-                            players = JsonConvert.DeserializeObject<ObservableCollection<Player>>(dataArray.ToString());
-                        }
-                        else if (data.Type == JTokenType.Object)
-                        {
-                            var player = JsonConvert.DeserializeObject<Player>(data.ToString());
-                            players.Add(player);
-                        }
-                    }
+                        string content = getJsonResponse.Item2;
 
-                    if (players.Count > 0)
-                    {
-                        this.PlayersList = players;
+                        players = this.ParseJsonResponse(content);
+
+                        if (players.Count > 0)
+                        {
+                            this.PlayersList = players;
+                            this.StartChoosing(null);
+                            this.ButtonEnabled = true;
+                        }
                     }
                 }
+                catch (Exception)
+                {
+                    this.ButtonEnabled = true;
+                    await App.Current.MainPage.DisplayAlert("Something went wrong", "Please try again", "OK");
+                }
             }
-            catch (Exception)
+            else
             {
-                // exception here
+                this.ButtonEnabled = true;
+                await App.Current.MainPage.DisplayAlert("No internet", "You're internet connection is rubbish. Please try again", "OK");
             }
+        }
+
+        public ObservableCollection<Player> ParseJsonResponse(string response)
+        {
+            ObservableCollection<Player> players = new ObservableCollection<Player>();
+            JObject parsedPayload = JsonConvert.DeserializeObject(response) as JObject;
+
+            JToken data = parsedPayload.SelectToken("$.players");
+
+            if (data.HasValues)
+            {
+                if (data.Type == JTokenType.Array)
+                {
+                    var dataArray = data as JArray;
+                    players = JsonConvert.DeserializeObject<ObservableCollection<Player>>(dataArray.ToString());
+                }
+                else if (data.Type == JTokenType.Object)
+                {
+                    var player = JsonConvert.DeserializeObject<Player>(data.ToString());
+                    players.Add(player);
+                }
+            }
+
+            return players;
         }
 
         public void GetRandomPlayers(int numPlayers)
