@@ -8,7 +8,6 @@ namespace ThisGuyVThatGuy
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Prism.Mvvm;
@@ -18,36 +17,86 @@ namespace ThisGuyVThatGuy
     using ThisGuyVThatGuy.Services.Interfaces;
     using Xamarin.Forms;
 
+    /// <summary>
+    /// View model for the main page.
+    /// </summary>
     public class MainPageViewModel : BindableBase, INavigationAware
     {
+        /// <summary>
+        /// Backing field for navigation service
+        /// </summary>
         private readonly INavigationService navigationService;
 
+        /// <summary>
+        /// Backing field for get HSON service
+        /// </summary>
         private IGetJsonService getJsonService;
 
+        /// <summary>
+        /// Backing field for random number generator
+        /// </summary>
         private Random rnd1 = new Random();
 
+        /// <summary>
+        /// Backing field for the list of all players
+        /// </summary>
         private ObservableCollection<Player> playersList;
 
+        /// <summary>
+        /// Backing field for the list of players to show in the list view
+        /// </summary>
         private ObservableCollection<Player> playersPick;
 
+        /// <summary>
+        /// Backing field for the player chosen in the list view
+        /// </summary>
         private Player selectedPlayer;
 
+        /// <summary>
+        /// Backing field for the success message
+        /// </summary>
         private string successMessage;
 
+        /// <summary>
+        /// Backing field for the button label
+        /// </summary>
         private string buttonMessage;
 
+        /// <summary>
+        /// Backing field for whether to show fppg
+        /// </summary>
         private bool showScore;
 
+        /// <summary>
+        /// Backing field for whether to show list of players
+        /// </summary>
         private bool showList;
 
+        /// <summary>
+        /// Backing field for whether the list view is enabled
+        /// </summary>
         private bool enabled;
 
+        /// <summary>
+        /// Backing field for whether the button is enabled
+        /// </summary>
         private bool buttonEnabled;
 
+        /// <summary>
+        /// Backing field for number of correct guesses
+        /// </summary>
         private int count;
 
+        /// <summary>
+        /// Backing field for number of players to choose from
+        /// </summary>
         private string numberPlayers;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainPageViewModel"/> class.
+        /// </summary>
+        /// <param name="navigationService">Navigation service</param>
+        /// <param name="getJsonService">get json service</param>
         public MainPageViewModel(INavigationService navigationService, IGetJsonService getJsonService)
         {
             this.navigationService = navigationService;
@@ -56,7 +105,7 @@ namespace ThisGuyVThatGuy
         }
 
         /// <summary>
-        /// Gets the command to go go
+        /// Gets the command to start/continue in game
         /// </summary>
         public Command GoCommand { get; private set; }
 
@@ -82,7 +131,7 @@ namespace ThisGuyVThatGuy
         }
 
         /// <summary>
-        /// Gets or sets observable collection with player list
+        /// Gets or sets observable collection with players to pick from
         /// </summary>
         public ObservableCollection<Player> PlayersPick
         {
@@ -102,6 +151,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected player chosen from the list
+        /// </summary>
         public Player SelectedPlayer
         {
             get
@@ -124,6 +176,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets the number of players to choose from
+        /// </summary>
         public string NumberPlayers
         {
             get
@@ -150,6 +205,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets the success message to show to the user
+        /// </summary>
         public string SuccessMessage
         {
             get
@@ -163,6 +221,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets the button label
+        /// </summary>
         public string ButtonMessage
         {
             get
@@ -176,6 +237,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to show the fppg
+        /// </summary>
         public bool ShowScore
         {
             get
@@ -189,6 +253,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to enable the list view
+        /// </summary>
         public bool Enabled
         {
             get
@@ -202,6 +269,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the button is enabled
+        /// </summary>
         public bool ButtonEnabled
         {
             get
@@ -215,6 +285,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to show the list of players
+        /// </summary>
         public bool ShowList
         {
             get
@@ -228,6 +301,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets or sets the number of correct answers
+        /// </summary>
         public int Count
         {
             get
@@ -241,10 +317,18 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Event handler for when the View Model is navigated from.
+        /// </summary>
+        /// <param name="parameters">Navigation parameters</param>
         public void OnNavigatedFrom(NavigationParameters parameters)
         {
         }
 
+        /// <summary>
+        /// Event handler for when the View Model is navigated to.
+        /// </summary>
+        /// <param name="parameters">Navigation parameters</param>
         public void OnNavigatedTo(NavigationParameters parameters)
         {
             this.SuccessMessage = "Pick who has the highest FPPG";
@@ -257,10 +341,18 @@ namespace ThisGuyVThatGuy
             this.ButtonEnabled = true;
         }
 
+        /// <summary>
+        /// Event handler for when the View Model is navigating to another page.
+        /// </summary>
+        /// <param name="parameters">Navigation parameters</param>
         public void OnNavigatingTo(NavigationParameters parameters)
         {
         }
 
+        /// <summary>
+        /// Button handler to get data or get new players to choose
+        /// </summary>
+        /// <param name="obj">button data</param>
         public void StartChoosing(object obj)
         {
             if (this.PlayersList.Count > 0)
@@ -286,6 +378,10 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Check if fppg selected is maximum in list
+        /// </summary>
+        /// <param name="fppgSelected">value chosen by user</param>
         public void RightAnswer(string fppgSelected)
         {
             if (this.ShowScore == false)
@@ -326,6 +422,9 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Gets the JSON list
+        /// </summary>
         public async void GetJson()
         {
             this.ButtonEnabled = false;
@@ -365,6 +464,11 @@ namespace ThisGuyVThatGuy
             }
         }
 
+        /// <summary>
+        /// Parses the JSON response to get list of players
+        /// </summary>
+        /// <param name="response">response string to parse</param>
+        /// <returns>list of players</returns>
         public ObservableCollection<Player> ParseJsonResponse(string response)
         {
             ObservableCollection<Player> players = new ObservableCollection<Player>();
@@ -389,6 +493,10 @@ namespace ThisGuyVThatGuy
             return players;
         }
 
+        /// <summary>
+        /// Gets the list of random players
+        /// </summary>
+        /// <param name="numPlayers">number of players to choose from</param>
         public void GetRandomPlayers(int numPlayers)
         {
             ObservableCollection<Player> list = new ObservableCollection<Player>();

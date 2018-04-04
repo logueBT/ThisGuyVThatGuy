@@ -7,6 +7,9 @@ namespace ThisGuyVThatGuy.Services.Interfaces
     using System;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Interface for the Get JSON Service
+    /// </summary>
     public interface IGetJsonService
     {
         /// <summary>

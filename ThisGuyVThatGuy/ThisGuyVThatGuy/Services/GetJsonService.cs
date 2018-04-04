@@ -5,14 +5,19 @@
 namespace ThisGuyVThatGuy.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using ThisGuyVThatGuy.Services.Interfaces;
 
+    /// <summary>
+    /// The get JSON service
+    /// </summary>
     public class GetJsonService : IGetJsonService
     {
+        /// <summary>
+        /// Attempts to get JSON string
+        /// </summary>
+        /// <returns>JSON string</returns>
         public async Task<Tuple<bool, string>> GetJsonAsync()
         {
             try

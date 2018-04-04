@@ -10,6 +10,9 @@ namespace ThisGuyVThatGuy
     using ThisGuyVThatGuy.Services;
     using ThisGuyVThatGuy.Services.Interfaces;
 
+    /// <summary>
+    /// This Guy V That Guy App
+    /// </summary>
     public partial class App : PrismApplication
     {
         public App(IPlatformInitializer initializer = null)
