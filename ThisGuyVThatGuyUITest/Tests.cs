@@ -97,6 +97,79 @@ namespace ThisGuyVThatGuyUITest
                 Assert.AreEqual(this.app.Query("goButton").First().Text, "Try again", "button label not right");
             }
         }
+
+        /// <summary>
+        /// Start game with 2 players then change number of players
+        /// </summary>
+        [Test]
+        public void TestChangeNumberPlayers()
+        {
+            this.app.WaitForElement("goButton");
+            this.app.WaitForNoElement("playerListView");
+
+            this.app.Tap("numberPicker");
+
+            this.app.Tap("3");
+
+            this.app.Tap("goButton");
+
+            this.app.WaitForElement("playerListView");
+
+            int count = this.app.Query("playerListViewName").Count();
+            int countPicker = Int32.Parse(this.app.Query("numberPicker").First().Text);
+
+            Assert.AreEqual(count, countPicker, "not correct length of list");
+
+            this.app.Tap("numberPicker");
+
+            this.app.Tap("4");
+
+            int count2 = this.app.Query("playerListViewName").Count();
+            int countPicker2 = Int32.Parse(this.app.Query("numberPicker").First().Text);
+
+            Assert.AreEqual(count2, countPicker2, "not correct length of list");
+        }
+
+        /// <summary>
+        /// Try to complete game
+        /// </summary>
+        [Test]
+        public void TestCompleteGame()
+        {
+            this.app.WaitForElement("goButton");
+            this.app.WaitForNoElement("playerListView");
+
+            this.app.Tap("goButton");
+
+            this.app.WaitForElement("playerListView");
+
+            
+
+            bool stillPlaying = true;
+
+            while (stillPlaying)
+            {
+                var elements = this.app.Query(c => c.Marked("playerListViewName"));
+
+                this.app.TapCoordinates(elements[0].Rect.CenterX, elements[0].Rect.CenterY);
+
+                string count = this.app.Query("numberCorrectCount").First().Text;
+
+                if (count == "10")
+                {
+                    stillPlaying = false;
+                }
+                else
+                {
+                    this.app.WaitForElement("playerListViewFppg");
+                    this.app.Tap("goButton");
+                    this.app.WaitForNoElement("playerListViewFppg");
+                }
+            }
+
+            Assert.AreEqual(this.app.Query("successMessage").First().Text, "You did it! Go again?", "success text not right");
+            Assert.AreEqual(this.app.Query("goButton").First().Text, "Go!", "button label not right");
+        }
     }
 }
 

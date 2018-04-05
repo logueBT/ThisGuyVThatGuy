@@ -504,6 +504,12 @@ namespace ThisGuyVThatGuy
             foreach (var item in list1)
             {
                 Player p = this.PlayersList[item];
+                string f = p.FPPG;
+                if (string.IsNullOrEmpty(f))
+                {
+                    p.FPPG = "0";
+                }
+
                 list.Add(p);
             }
 
