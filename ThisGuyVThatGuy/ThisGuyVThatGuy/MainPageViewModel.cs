@@ -8,6 +8,7 @@ namespace ThisGuyVThatGuy
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Prism.Mvvm;
@@ -101,7 +102,7 @@ namespace ThisGuyVThatGuy
         {
             this.navigationService = navigationService;
             this.getJsonService = getJsonService;
-            this.GoCommand = new Command((obj) => { this.StartChoosing(obj); });
+            this.GoCommand = new Command(async (obj) => { await this.StartChoosing(obj); });
         }
 
         /// <summary>
@@ -353,7 +354,8 @@ namespace ThisGuyVThatGuy
         /// Button handler to get data or get new players to choose
         /// </summary>
         /// <param name="obj">button data</param>
-        public void StartChoosing(object obj)
+        /// <returns>A <see cref="Task"/></returns>
+        public async Task StartChoosing(object obj)
         {
             if (this.PlayersList.Count > 0)
             {
@@ -374,7 +376,7 @@ namespace ThisGuyVThatGuy
             }
             else
             {
-                this.GetJson();
+                await this.GetJson();
             }
         }
 
@@ -425,7 +427,8 @@ namespace ThisGuyVThatGuy
         /// <summary>
         /// Gets the JSON list
         /// </summary>
-        public async void GetJson()
+        /// <returns>A <see cref="Task"/></returns>
+        public async Task GetJson()
         {
             this.ButtonEnabled = false;
             string url = "http://www.google.co.uk";
@@ -440,13 +443,28 @@ namespace ThisGuyVThatGuy
                     if (isSuccessful)
                     {
                         string content = getJsonResponse.Item2;
+                        JObject parsedPayload = JsonConvert.DeserializeObject(content) as JObject;
 
-                        players = this.ParseJsonResponse(content);
+                        JToken data = parsedPayload.SelectToken("$.players");
+
+                        if (data.HasValues)
+                        {
+                            if (data.Type == JTokenType.Array)
+                            {
+                                var dataArray = data as JArray;
+                                players = JsonConvert.DeserializeObject<ObservableCollection<Player>>(dataArray.ToString());
+                            }
+                            else if (data.Type == JTokenType.Object)
+                            {
+                                var player = JsonConvert.DeserializeObject<Player>(data.ToString());
+                                players.Add(player);
+                            }
+                        }
 
                         if (players.Count > 0)
                         {
                             this.PlayersList = players;
-                            this.StartChoosing(null);
+                            await this.StartChoosing(null);
                             this.ButtonEnabled = true;
                         }
                     }
@@ -462,35 +480,6 @@ namespace ThisGuyVThatGuy
                 this.ButtonEnabled = true;
                 await App.Current.MainPage.DisplayAlert("No internet", "You're internet connection is rubbish. Please try again", "OK");
             }
-        }
-
-        /// <summary>
-        /// Parses the JSON response to get list of players
-        /// </summary>
-        /// <param name="response">response string to parse</param>
-        /// <returns>list of players</returns>
-        public ObservableCollection<Player> ParseJsonResponse(string response)
-        {
-            ObservableCollection<Player> players = new ObservableCollection<Player>();
-            JObject parsedPayload = JsonConvert.DeserializeObject(response) as JObject;
-
-            JToken data = parsedPayload.SelectToken("$.players");
-
-            if (data.HasValues)
-            {
-                if (data.Type == JTokenType.Array)
-                {
-                    var dataArray = data as JArray;
-                    players = JsonConvert.DeserializeObject<ObservableCollection<Player>>(dataArray.ToString());
-                }
-                else if (data.Type == JTokenType.Object)
-                {
-                    var player = JsonConvert.DeserializeObject<Player>(data.ToString());
-                    players.Add(player);
-                }
-            }
-
-            return players;
         }
 
         /// <summary>
