@@ -4,10 +4,62 @@
              xmlns:local="clr-namespace:ThisGuyVThatGuy"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              x:Class="ThisGuyVThatGuy.MainPage"
+             x:Name="Main"
+             xmlns:convert="clr-namespace:ThisGuyVThatGuy.Converters"
              prism:ViewModelLocator.AutowireViewModel="True">
 
-	<Label Text="Welcome to Xamarin.Forms!" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center" />
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <convert:ImageDicToUrlConverter x:Key="ImageDicToUrlConverter"></convert:ImageDicToUrlConverter>
 
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition 
+                        Height="Auto">
+            </RowDefinition>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackLayout Grid.Row="0" Margin="10">
+                <Label AutomationId="pageTitle" Text="This Guy V That Guy" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label AutomationId="pageInstructions" Text="Pick which player has the largest FPPG, get 10 right and you win"/>
+                <Label AutomationId="pickerExplainer" Text="How many players do you want to choose from?"/>
+                <Picker x:Name="numberPicker" AutomationId="numberPicker" SelectedItem="{Binding NumberPlayers}" HorizontalOptions="FillAndExpand">
+                    <Picker.Items>
+                        <x:String>2</x:String>
+                        <x:String>3</x:String>
+                        <x:String>4</x:String>
+                        <x:String>5</x:String>
+                        <x:String>6</x:String>
+                    </Picker.Items>
+                </Picker>
+                <StackLayout Orientation="Horizontal">
+                    <Label AutomationId="numberCorrectLabel" Text="Number correct:"/>
+                    <Label AutomationId="numberCorrectCount" Text="{Binding Count}"/>
+                </StackLayout>
+                <Label AutomationId="successMessage" Text="{Binding SuccessMessage}"/>
+                <Button AutomationId="goButton" Text="{Binding ButtonMessage}" IsVisible="{Binding ButtonEnabled}" Command="{Binding GoCommand}"/>
+            </StackLayout>
+
+            <ListView Grid.Row="1" x:Name="PlayerListView" AutomationId="playerListView" IsVisible="{Binding ShowList}" IsEnabled="{Binding Enabled}" ItemsSource="{Binding PlayersPick}"  SelectedItem="{Binding SelectedPlayer}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal">
+                                <Image AutomationId="playerListView" Source="{Binding Image, Converter={StaticResource ImageDicToUrlConverter}}}"/>
+                        <StackLayout Orientation="Vertical">
+                                    <Label AutomationId="playerListViewName" Text="{Binding FullName}"/>
+                                    <Label AutomationId="playerListViewFppg" Text="{Binding FPPG}" IsVisible="{Binding Source = {x:Reference Main}, Path=BindingContext.ShowScore}"/>
+                        </StackLayout>
+                    </StackLayout>
+                </ViewCell>
+
+
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+    </Grid>
+    </ScrollView>
 </ContentPage>
