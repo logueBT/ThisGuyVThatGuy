@@ -20,11 +20,11 @@ namespace ThisGuyVThatGuyUITest
         /// <summary>
         /// Test to open the REPL window
         /// </summary>
-        [Test]
-        public void RunRepl()
-        {
-            this.app.Repl();
-        }
+        //[Test]
+        //public void RunRepl()
+        //{
+        //    this.app.Repl();
+        //}
 
         /// <summary>
         /// Test the opening screen
@@ -123,7 +123,7 @@ namespace ThisGuyVThatGuyUITest
             this.app.Tap("numberPicker");
 
             this.app.Tap("4");
-
+            this.app.WaitForElement("playerListView");
             int count2 = this.app.Query("playerListViewName").Count();
             int countPicker2 = Int32.Parse(this.app.Query("numberPicker").First().Text);
 
